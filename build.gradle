@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation (
+            "com.codeborne:selenide:5.20.3",
+            "org.junit.jupiter:junit-jupiter-api:5.7.1",
+            "com.github.javafaker:javafaker:1.0.2"
+    )
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.1"
+    compile group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.25'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,96 +1,72 @@
 package tests;
 
-import com.codeborne.selenide.Configuration;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import com.github.javafaker.Faker;
+import model.Gender;
+import model.Hobby;
+import model.Month;
+import model.Subject;
 import org.junit.jupiter.api.Test;
+import pages.StudentRegistrationFormPage;
 
-import java.io.File;
+import java.time.Year;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.*;
+import static utils.RandomUtils.getMaxDaysInMonth;
 
-public class AutomationPracticeFormTests {
+public class AutomationPracticeFormTests extends baseTest {
+    // Test data
+    Faker faker = new Faker();
+    public String firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            email = faker.internet().emailAddress(),
+            gender = Gender.values()[faker.random().nextInt(0, 2)].toString(),
+            filename = "testFile.JPG",
+            mobile = faker.phoneNumber().subscriberNumber(10),
+            monthOfBirth = Month.values()[faker.random().nextInt(0, 11)].toString(),
+            yearOfBirth = faker.random().nextInt(1900, Year.now().getValue()).toString(),
+            dayOfBirth = String.valueOf(getMaxDaysInMonth(Month.valueOf(monthOfBirth).ordinal(),
+                    Integer.parseInt(yearOfBirth))),
+            subject = Subject.values()[faker.random().nextInt(0, 4)].toString(),
+            hobby = Hobby.values()[faker.random().nextInt(0, 2)].toString(),
+            currentAddress = faker.address().fullAddress(),
+            state = "Uttar Pradesh",
+            city = "Merrut";
 
-    @BeforeAll
-    static void setStartConfig() {
-        Configuration.startMaximized = true;
-    }
-
-    @BeforeEach
-    void executeBeforeTest() {
-        open("https://demoqa.com/automation-practice-form");
-    }
-
-    @Test
-    void fillAllFormFieldsTest() {
-        // Test data
-        String firstName = "Ivan",
-                lastName = "Ivanov",
-                email = "test@gmail.com",
-                gender = "Male",
-                filename = "testFile.JPG",
-                country = "Russia",
-                userNumber = "9111111111";
-
-        // Fill the form
-        $("#firstName").setValue(firstName);
-        $("#lastName").setValue(lastName);
-        $("#userEmail").setValue(email);
-        $("[for='gender-radio-1']").click();
-        $("#userNumber").setValue(userNumber);
-        $("#dateOfBirthInput").click();
-        $(".react-datepicker__month-select").selectOption("March");
-        $(".react-datepicker__year-select").selectOption("1991");
-        $("[aria-label='Choose Monday, March 18th, 1991']").click();
-        $("#subjectsInput").setValue("Co").pressEnter();
-        $("[for='hobbies-checkbox-1']").click();
-        $("[for='hobbies-checkbox-2']").click();
-        $("#uploadPicture").uploadFile(new File("src/resources/" + filename));
-        $("#currentAddress").setValue(country);
-        $("#react-select-3-input").setValue("Raja").pressEnter();
-        $("#react-select-4-input").setValue("Jais").pressEnter();
-        $("#submit").click();
-
-        // Check data
-        $(".table-responsive").
-                shouldHave(text(firstName + " " + lastName),
-                        text(email),
-                        text(gender),
-                        text(userNumber),
-                        text("18 March,1991"),
-                        text("Computer Science"),
-                        text("Sports, Reading"),
-                        text(filename),
-                        text(country),
-                        text("Rajasthan Jaiselmer")
-                );
-    }
+    StudentRegistrationFormPage studentRegistrationFormPage = new StudentRegistrationFormPage();
 
     @Test
-    void fillMinimumFieldsToSubmitTest() {
-        // Test data
-        String firstName = "Ivan",
-                lastName = "Ivanov",
-                userNumber = "9111111111";
+    void checkAutomationPracticeForm() {
+        // Open test page
+        studentRegistrationFormPage.openPage();
 
         // Fill the form
-        $("#firstName").setValue(firstName);
-        $("#lastName").setValue(lastName);
-        $("#gender-radio-3").parent().click();
-        $("#userNumber").setValue(userNumber);
-        $("#submit").click();
+        studentRegistrationFormPage.typeFirstName(firstName);
+        studentRegistrationFormPage.typeSecondName(lastName);
+        studentRegistrationFormPage.typeEmail(email);
+        studentRegistrationFormPage.chooseGender(gender);
+        studentRegistrationFormPage.typePhoneNumber(mobile);
+        studentRegistrationFormPage.chooseDateOfBirth(dayOfBirth, monthOfBirth, yearOfBirth);
+        studentRegistrationFormPage.typeSubject(subject);
+        studentRegistrationFormPage.chooseHobby(hobby);
+        studentRegistrationFormPage.uploadImage(filename);
+        studentRegistrationFormPage.typeAddress(currentAddress);
+        studentRegistrationFormPage.chooseStateAndCity(state, city);
+        studentRegistrationFormPage.pressSubmit();
 
-        // Check data
-        $("#example-modal-sizes-title-lg").shouldHave(text("Thanks for submitting the form"));
-        $(".table-responsive").shouldHave(
-                text(firstName + " " + lastName),
-                text("Other"),
-                text(userNumber)
-        );
-        $("button#closeLargeModal").click();
-        //$("#example-modal-sizes-title-lg").shouldNotBe(visible);
-        $("#example-modal-sizes-title-lg").should(exist); //it works only without previous line
-        $("#example-modal-sizes-title-lg").should(disappear); //it works always
+        // Check result data
+        studentRegistrationFormPage.checkResults(
+                firstName,
+                lastName,
+                email,
+                gender,
+                mobile,
+                dayOfBirth,
+                monthOfBirth,
+                yearOfBirth,
+                subject,
+                hobby,
+                filename,
+                currentAddress,
+                state,
+                city);
     }
 }

@@ -1,2 +1,2 @@
-# faker() and PageObject
+# Using faker() and PageObject
 lesson5
