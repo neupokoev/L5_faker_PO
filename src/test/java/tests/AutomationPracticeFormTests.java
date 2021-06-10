@@ -12,7 +12,7 @@ import java.time.Year;
 
 import static utils.RandomUtils.getMaxDaysInMonth;
 
-public class AutomationPracticeFormTests extends baseTest {
+public class AutomationPracticeFormTests extends BaseTest {
     // Test data
     Faker faker = new Faker();
     public String firstName = faker.name().firstName(),

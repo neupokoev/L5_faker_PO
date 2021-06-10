@@ -4,12 +4,11 @@ import static com.codeborne.selenide.CollectionCondition.texts;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
-import static tests.baseTest.URL;
 
 public class StudentRegistrationFormPage {
 
     public void openPage() {
-        open(URL + "/automation-practice-form");
+        open("/automation-practice-form");
         $(".practice-form-wrapper").shouldHave(text("Student Registration Form"));
     }
 

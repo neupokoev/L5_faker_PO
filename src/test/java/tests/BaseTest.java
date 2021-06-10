@@ -3,11 +3,10 @@ package tests;
 import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 
-public class baseTest {
-    public static final String URL = "https://demoqa.com";
-
+public class BaseTest {
     @BeforeAll
     public static void setup() {
+        Configuration.baseUrl = "https://demoqa.com";
         Configuration.startMaximized = true;
     }
 }
