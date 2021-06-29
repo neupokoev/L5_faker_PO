@@ -7,6 +7,6 @@ public class BaseTest {
     @BeforeAll
     public static void setup() {
         Configuration.baseUrl = "https://demoqa.com";
-        Configuration.startMaximized = true;
+        Configuration.startMaximized = true; // comment for pull request
     }
 }
